@@ -6,6 +6,7 @@
 若有設定 LINE_CHANNEL_ACCESS_TOKEN，會同時用 LINE OA 推播（之後想升級時再設定即可）。
 """
 import argparse
+import json
 import logging
 import os
 import sys
@@ -36,12 +37,25 @@ SAMPLE = [
 ]
 
 
+def today_done() -> bool:
+    """今天的資料檔存在，且不是「只列標題」的備案版本。"""
+    from pathlib import Path
+    f = Path("site/data") / f"{datetime.now(TPE):%Y-%m-%d}.json"
+    if not f.exists():
+        return False
+    try:
+        data = json.loads(f.read_text(encoding="utf-8"))
+        return bool(data) and not data[0].get("headline_only")
+    except Exception:  # noqa: BLE001
+        return False
+
+
 def headline_only(candidates: list[dict], n: int) -> list[dict]:
     """AI 無法使用時的備案：官方來源優先列出最新標題與原文連結（不含 AI 欄位）。"""
     return [{
         "title": c["title"], "source": c["source"], "date": c["date"], "link": c["link"],
         "category": "今日新聞", "summary": "", "ai_view": "", "extended_needs": [], "headline_only": True,
-    } for c in candidates[:n * 2]]
+    } for c in candidates[:n]]
 
 
 def sample_market() -> dict:
@@ -60,7 +74,13 @@ def sample_market() -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--sample", action="store_true")
+    ap.add_argument("--skip-if-done", action="store_true",
+                    help="今天已經有 AI 整理好的新聞就直接結束（給 7:00、7:30 的補跑使用）")
     args = ap.parse_args()
+
+    if args.skip_if_done and today_done():
+        log.info("今天的新聞已由 AI 整理完成，略過這次補跑")
+        return 0
 
     if args.sample:
         news = SAMPLE

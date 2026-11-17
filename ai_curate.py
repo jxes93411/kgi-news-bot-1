@@ -23,7 +23,8 @@ from sources import NEWS_PER_DAY
 
 log = logging.getLogger(__name__)
 
-PREFERRED = [os.getenv("GEMINI_MODEL"), "gemini-3.8-flash", "gemini-flash-latest"]
+PREFERRED = [os.getenv("GEMINI_MODEL"), "gemini-3.8-flash"]
+RETIRED = {"gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"}  # 新帳號已不能使用
 
 ROLE = """你是凱基人壽北一區域中心的資深保險財經編輯，服務對象是第一線業務同仁。一律使用台灣繁體中文。"""
 
@@ -81,7 +82,7 @@ def _candidate_models() -> list[str]:
         log.info("可用的 Flash 模型：%s", found[:5])
     except Exception as e:  # noqa: BLE001
         log.warning("查詢模型清單失敗：%s", str(e)[:200])
-    _models = list(dict.fromkeys([p for p in PREFERRED if p] + found))
+    _models = [m for m in dict.fromkeys([p for p in PREFERRED if p] + found) if m not in RETIRED]
     return _models
 
 
@@ -115,36 +116,45 @@ def _generate(model: str, system: str, prompt: str, limit: int = 120) -> str:
     return box["text"]
 
 
+ROUNDS = 3          # 所有模型都忙時，最多試幾輪
+ROUND_WAIT = 120    # 每輪之間等幾秒
+BUDGET = 15 * 60    # 單次呼叫最多花幾秒（含所有重試）
+
+
 def _call(system: str, prompt: str) -> dict:
-    """依序嘗試可用模型。
-    404（模型停用）→ 直接換下一個；503／逾時（使用量太大）→ 重試 1 次後換下一個；
-    429（免費額度暫時用完）→ 等 30 秒重試。"""
+    """依序嘗試可用模型；全部都忙（503／504）時，等 2 分鐘再試下一輪，最多 3 輪。
+    404（模型停用）→ 之後不再試；429（額度用完）→ 換下一個模型。"""
     last_err = None
     started = time.time()
-    for model in _candidate_models():
-        for attempt in range(2):
-            if time.time() - started > 8 * 60:
-                raise RuntimeError(f"Gemini 嘗試超過 8 分鐘仍失敗：{last_err}")
-            try:
-                text = _generate(model, system, prompt)
-                m = re.search(r"\{.*\}", text, re.S)
-                data = json.loads(m.group(0) if m else text)
-                log.info("使用模型：%s", model)
-                return data
-            except Exception as e:  # noqa: BLE001
-                last_err = e
-                msg = str(e)
-                log.warning("Gemini %s 第 %d 次失敗：%s", model, attempt + 1, msg[:200])
-                if "404" in msg or "NOT_FOUND" in msg or "not found" in msg.lower():
-                    break
-                if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
-                    # 免費額度用完：Google 要求等很久（retryDelay）或屬於每日上限 → 直接換下一個模型
-                    wait = re.search(r"retryDelay'?:?\s*'?(\d+)s", msg)
-                    if not wait or int(wait.group(1)) > 60 or "PerDay" in msg:
+    dead: set[str] = set()
+    for rnd in range(1, ROUNDS + 1):
+        for model in [m for m in _candidate_models() if m not in dead]:
+            for attempt in range(2):
+                if time.time() - started > BUDGET:
+                    raise RuntimeError(f"Gemini 嘗試超過 {BUDGET // 60} 分鐘仍失敗：{last_err}")
+                try:
+                    text = _generate(model, system, prompt)
+                    m = re.search(r"\{.*\}", text, re.S)
+                    data = json.loads(m.group(0) if m else text)
+                    log.info("使用模型：%s（第 %d 輪）", model, rnd)
+                    return data
+                except Exception as e:  # noqa: BLE001
+                    last_err = e
+                    msg = str(e)
+                    log.warning("Gemini %s 第 %d 輪第 %d 次失敗：%s", model, rnd, attempt + 1, msg[:160])
+                    if "404" in msg or "NOT_FOUND" in msg or "not found" in msg.lower():
+                        dead.add(model)
                         break
-                    time.sleep(int(wait.group(1)) + 2)
-                else:
-                    time.sleep(5)
+                    if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+                        wait = re.search(r"retryDelay'?:?\s*'?(\d+)s", msg)
+                        if not wait or int(wait.group(1)) > 60 or "PerDay" in msg:
+                            break
+                        time.sleep(int(wait.group(1)) + 2)
+                    else:
+                        time.sleep(5)
+        if rnd < ROUNDS:
+            log.info("所有模型目前都忙，%d 秒後進行第 %d 輪", ROUND_WAIT, rnd + 1)
+            time.sleep(ROUND_WAIT)
     raise RuntimeError(f"Gemini 呼叫失敗：{last_err}")
 
 
