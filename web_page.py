@@ -45,6 +45,7 @@ article h2{font-size:18px;margin:8px 0 6px;line-height:1.5}
 .src{font-size:13px;color:var(--sub)}.src a{color:var(--main)}
 .f{margin-top:14px}.f h3{font-size:13px;color:var(--main);margin:0 0 4px}
 .f p{margin:0;font-size:15px}
+.f p.note{margin-top:6px;font-size:12px;color:var(--sub)}
 .script{background:var(--light);border-left:4px solid var(--main);padding:10px 12px;border-radius:6px;font-size:15px}
 .chips span{display:inline-block;background:#fff;border:1px solid #C9D8EC;color:var(--main);font-size:13px;padding:3px 10px;border-radius:99px;margin:3px 4px 0 0}
 button{border:0;background:var(--main);color:#fff;font-size:14px;font-weight:700;padding:9px 14px;border-radius:8px;margin-top:8px;cursor:pointer}
@@ -66,12 +67,14 @@ def _article(i: int, n: dict) -> str:
     link = (f' ｜<a href="{E(n["link"])}" target="_blank" rel="noopener">閱讀原文 ↗</a>'
             if n["link"].startswith("http") else "")
     chips = "".join(f"<span>{E(x)}</span>" for x in n["extended_needs"])
+    note = ('<p class="note">※ 系統未能讀取原文內容，摘要僅依標題整理，詳細內容請點「閱讀原文」。</p>'
+            if n.get("no_content") else "")
     return f"""
 <article id="n{i}">
   <span class="tag">NEWS {i}｜{E(n['category'])}</span>
   <h2>{E(n['title'])}</h2>
   <div class="src">📌 {E(n['source'])}｜{E(n['date'])}{link}</div>
-  <div class="f"><h3>📰 新聞摘要</h3><p>{E(n['summary'])}</p></div>
+  <div class="f"><h3>📰 新聞摘要</h3><p>{E(n['summary'])}</p>{note}</div>
   <div class="f"><h3>💡 AI 保險觀點</h3><p>{E(n['ai_view'])}</p></div>
   <div class="f"><h3>🎯 延伸需求</h3><div class="chips">{chips}</div></div>
 </article>"""

@@ -46,14 +46,15 @@ def main() -> int:
     else:
         from ai_curate import select, write
         from fetch_news import enrich, fetch_candidates
+        from sources import NEWS_PER_DAY
         candidates = fetch_candidates()
         log.info("候選新聞共 %d 則", len(candidates))
         if not candidates:
             log.error("今天沒有抓到任何新聞，停止產生網頁")
             return 1
-        picked = select(candidates)
-        log.info("AI 挑選 %d 則，開始抓原文內文", len(picked))
-        news = write(enrich(picked))
+        ranked = select(candidates)
+        log.info("AI 挑選並排序 %d 則，開始讀取原文", len(ranked))
+        news = write(enrich(ranked, NEWS_PER_DAY))
         log.info("AI 完成 %d 則", len(news))
         if not news:
             log.error("AI 沒有產出任何新聞，停止產生網頁")

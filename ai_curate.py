@@ -28,16 +28,17 @@ _SKIP = ("lite", "image", "tts", "audio", "live", "embedding", "thinking", "exp"
 
 ROLE = """你是凱基人壽北一區域中心的資深保險財經編輯，服務對象是第一線業務同仁。一律使用台灣繁體中文。"""
 
-SELECT_RULES = f"""從候選新聞中挑出 {NEWS_PER_DAY} 則最值得業務員了解、可以拿來和客戶聊的新聞。
+SELECT_RULES = f"""從候選新聞中挑出 {NEWS_PER_DAY * 2} 則最值得業務員了解、可以拿來和客戶聊的新聞，依重要性由高到低排序（前 {NEWS_PER_DAY} 則是首選，其餘是備選）。
 挑選原則：
 1. 官方來源（金管會、保險局、壽險公會、財政部、衛福部、央行）優先，媒體新聞補充。
 2. 與保險、退休、醫療、長照、稅務傳承、利率匯率相關性高者優先。
 3. 主題盡量多元，不要多則講同一件事。
-4. 不挑選單純報導個別保險公司得獎、業績排名、人事異動的新聞。
+4. 不挑選單純報導個別保險公司得獎、業績排名、人事異動、每日例行公告、標案或徵才的新聞。
 只輸出 JSON：{{"ids": [候選新聞的id數字, ...]}}"""
 
 WRITE_RULES = """為每則新聞撰寫內容。
-- summary：100～150 個中文字，只能根據提供的內文，不得補充原文沒有的數字或事實。
+- summary：100～150 個中文字，只能根據提供的 content，不得補充 content 沒有的數字、事實或評論。
+  若該則標示 no_content=true（讀不到原文），summary 只能改寫標題本身能確定的事實，寫 30～60 字即可，嚴禁推測或補充細節。
 - ai_view：這則新聞與保險規劃的關聯，2～3 句。
 - extended_needs：3～5 個可延伸討論的保障或財務規劃議題（短詞）。
 - category：主題標籤，例如：退休規劃、醫療長照、稅務傳承、利率匯率、金融監理、產業趨勢。
@@ -125,13 +126,19 @@ def select(candidates: list[dict]) -> list[dict]:
             continue
         if c and c not in picked:
             picked.append(c)
-    return picked[:NEWS_PER_DAY]
+    return picked[:NEWS_PER_DAY * 2]
 
 
 def write(items: list[dict]) -> list[dict]:
     """第二段：根據原文內文撰寫五欄位。"""
-    payload = [{"id": c["id"], "source": c["source"], "date": c["date"], "title": c["title"],
-                "content": (c.get("content") or c["rss_summary"] or c["title"])[:2000]} for c in items]
+    payload = []
+    for c in items:
+        row = {"id": c["id"], "source": c["source"], "date": c["date"], "title": c["title"]}
+        if c.get("no_content"):
+            row["no_content"] = True
+        else:
+            row["content"] = c["content"][:2500]
+        payload.append(row)
     data = _call(ROLE + "\n" + WRITE_RULES,
                  "今日精選新聞（JSON）：\n" + json.dumps(payload, ensure_ascii=False))
 
@@ -152,5 +159,6 @@ def write(items: list[dict]) -> list[dict]:
             "title": src["title"], "source": src["source"], "date": src["date"], "link": src["link"],
             "category": str(p["category"]), "summary": str(p["summary"]), "ai_view": str(p["ai_view"]),
             "extended_needs": needs if isinstance(needs, list) else [str(needs)],
+            "no_content": bool(src.get("no_content")),
         })
     return result
