@@ -13,6 +13,7 @@ MEDIA_KEYWORDS = (
 
 SOURCES = [
     {"name": "金管會",   "domain": "fsc.gov.tw",     "use": "保險政策、金融監理", "priority": 1, "keywords": ""},
+    {"name": "金管會保險局", "domain": "ib.gov.tw",  "use": "保險監理、保戶權益", "priority": 1, "keywords": ""},
     {"name": "壽險公會", "domain": "lia-roc.org.tw", "use": "壽險統計、產業資訊", "priority": 1, "keywords": ""},
     {"name": "財政部",   "domain": "mof.gov.tw",     "use": "遺產稅、贈與稅、稅務", "priority": 1, "keywords": ""},
     {"name": "衛福部",   "domain": "mohw.gov.tw",    "use": "健保、醫療、長照",   "priority": 1, "keywords": ""},
@@ -23,10 +24,13 @@ SOURCES = [
 ]
 
 # 抓取時間範圍（小時）。官方網站更新頻率較低，給較長的範圍
-LOOKBACK_HOURS = {1: 72, 2: 30}
+LOOKBACK_HOURS = {1: 72, 2: 48}
 
 # 每天推播幾則（LINE 輪播最多 12 則，建議 5～6 則）
 NEWS_PER_DAY = 6
 
-# 送給 AI 挑選的候選新聞上限
-MAX_CANDIDATES = 30
+# 每個來源最多保留幾則（取最新），避免單一來源塞滿候選清單
+PER_SOURCE = 10
+
+# 送給 AI 挑選的候選新聞上限（第一段只送標題，數量可以多一些）
+MAX_CANDIDATES = 80

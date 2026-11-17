@@ -44,15 +44,20 @@ def main() -> int:
     if args.sample:
         news = SAMPLE
     else:
-        from ai_curate import curate
-        from fetch_news import fetch_candidates
+        from ai_curate import select, write
+        from fetch_news import enrich, fetch_candidates
         candidates = fetch_candidates()
         log.info("候選新聞共 %d 則", len(candidates))
         if not candidates:
             log.error("今天沒有抓到任何新聞，停止產生網頁")
             return 1
-        news = curate(candidates)
-        log.info("AI 精選 %d 則", len(news))
+        picked = select(candidates)
+        log.info("AI 挑選 %d 則，開始抓原文內文", len(picked))
+        news = write(enrich(picked))
+        log.info("AI 完成 %d 則", len(news))
+        if not news:
+            log.error("AI 沒有產出任何新聞，停止產生網頁")
+            return 1
 
     url, text = build(news)
     log.info("網頁已產生：%s", url)

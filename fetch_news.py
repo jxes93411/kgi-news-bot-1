@@ -8,7 +8,7 @@ from urllib.parse import quote
 import feedparser
 import requests
 
-from sources import LOOKBACK_HOURS, MAX_CANDIDATES, SOURCES
+from sources import LOOKBACK_HOURS, MAX_CANDIDATES, PER_SOURCE, SOURCES
 
 log = logging.getLogger(__name__)
 UA = {"User-Agent": "Mozilla/5.0 (KGI-North1-NewsBot)"}
@@ -27,16 +27,19 @@ def _clean_title(title: str, source_name: str) -> str:
 
 
 def _resolve_link(link: str) -> str:
-    """把 Google News 轉址連結還原成原文網址（失敗時保留原連結）。"""
+    """把 Google News 轉址連結還原成原文網址（失敗時保留原連結，點擊仍會轉到原文）。"""
     if "news.google.com" not in link:
         return link
-    try:
-        from googlenewsdecoder import gnewsdecoder
-        r = gnewsdecoder(link, interval=0.5)
-        if r.get("status"):
-            return r["decoded_url"]
-    except Exception as e:  # noqa: BLE001
-        log.debug("decode failed: %s", e)
+    from googlenewsdecoder import gnewsdecoder
+    for attempt in range(3):
+        try:
+            r = gnewsdecoder(link, interval=1)
+            if r.get("status"):
+                return r["decoded_url"]
+            log.debug("decode status false: %s", r.get("message"))
+        except Exception as e:  # noqa: BLE001
+            log.debug("decode failed: %s", e)
+        time.sleep(5 * (attempt + 1))  # 被 Google 限流（429）時多等一下
     return link
 
 
@@ -57,6 +60,7 @@ def _fetch_text(url: str, limit: int = 2500) -> str:
 def fetch_candidates() -> list[dict]:
     now = time.time()
     items, seen = [], set()
+    src_start = 0
 
     for src in SOURCES:
         hours = LOOKBACK_HOURS[src["priority"]]
@@ -86,20 +90,31 @@ def fetch_candidates() -> list[dict]:
                 "source_use": src["use"],
                 "priority": src["priority"],
                 "title": title,
-                "date": time.strftime("%Y-%m-%d", time.localtime(epoch)),
+                "date": time.strftime("%Y-%m-%d", time.gmtime(epoch + 8 * 3600)),  # 台灣時間
                 "epoch": epoch,
                 "link": e.get("link", ""),
                 "rss_summary": desc,
             })
             count += 1
-        log.info("[%s] 取得 %d 則", src["name"], count)
+        # 每個來源只留最新的 PER_SOURCE 則，避免單一來源塞滿候選清單
+        mine = sorted(items[src_start:], key=lambda x: -x["epoch"])[:PER_SOURCE]
+        items[src_start:] = mine
+        src_start = len(items)
+        log.info("[%s] 取得 %d 則，保留 %d 則", src["name"], count, len(mine))
 
     # 官方優先、再依時間新舊排序
     items.sort(key=lambda x: (x["priority"], -x["epoch"]))
     items = items[:MAX_CANDIDATES]
-
     for i, it in enumerate(items):
         it["id"] = i
+    return items
+
+
+def enrich(items: list[dict]) -> list[dict]:
+    """只針對 AI 挑中的新聞：還原原文網址並抓內文（請求數少，不易被 Google 限流）。"""
+    for it in items:
         it["link"] = _resolve_link(it["link"])
         it["content"] = _fetch_text(it["link"])
+        log.info("內文 %d 字：%s", len(it["content"]), it["title"][:30])
+        time.sleep(2)
     return items
