@@ -127,14 +127,17 @@ def _market(mk: dict | None) -> str:
 def _article(i: int, n: dict) -> str:
     link = (f' ｜<a href="{E(n["link"])}" target="_blank" rel="noopener">閱讀原文 ↗</a>'
             if n["link"].startswith("http") else "")
-    chips = "".join(f"<span>{E(x)}</span>" for x in n["extended_needs"])
-    note = ('<p class="note">※ 系統未能讀取原文內容，摘要僅依標題整理，詳細內容請點「閱讀原文」。</p>'
-            if n.get("no_content") else "")
-    return f"""
+    head = f"""
 <article id="n{i}">
   <span class="tag">NEWS {i}｜{E(n['category'])}</span>
   <h2>{E(n['title'])}</h2>
-  <div class="src">📌 {E(n['source'])}｜{E(n['date'])}{link}</div>
+  <div class="src">📌 {E(n['source'])}｜{E(n['date'])}{link}</div>"""
+    if n.get("headline_only"):
+        return head + "\n</article>"
+    chips = "".join(f"<span>{E(x)}</span>" for x in n["extended_needs"])
+    note = ('<p class="note">※ 系統未能讀取原文內容，摘要僅依標題整理，詳細內容請點「閱讀原文」。</p>'
+            if n.get("no_content") else "")
+    return head + f"""
   <div class="f"><h3>📰 新聞摘要</h3><p>{E(n['summary'])}</p>{note}</div>
   <div class="f"><h3>💡 AI 保險觀點</h3><p>{E(n['ai_view'])}</p></div>
   <div class="f"><h3>🎯 延伸需求</h3><div class="chips">{chips}</div></div>
@@ -146,6 +149,8 @@ def _page(news: list[dict], d: datetime, url: str, archive: list[str], mk: dict 
     arts = "".join(_article(i, n) for i, n in enumerate(news, 1))
     hist = "｜".join(f'<a href="{a}.html">{a[5:].replace("-", "/")}</a>' for a in archive[:14])
     desc = "、".join(n["title"] for n in news[:3])[:90]
+    notice = ('<div class="mk na">⚠️ AI 整理服務今天暫時無法使用，以下先列出最新新聞標題與原文連結。</div>'
+              if news and news[0].get("headline_only") else "")
     return f"""<!DOCTYPE html>
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -158,6 +163,7 @@ def _page(news: list[dict], d: datetime, url: str, archive: list[str], mk: dict 
 <header><div class="brand">{BRAND}</div><h1>今日保險財經新聞</h1><div class="date">{_date_label(d)}</div></header>
 <main>
   {_market(mk)}
+  {notice}
   <nav class="toc">{toc}</nav>
   {arts}
 </main>

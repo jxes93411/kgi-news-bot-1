@@ -36,6 +36,14 @@ SAMPLE = [
 ]
 
 
+def headline_only(candidates: list[dict], n: int) -> list[dict]:
+    """AI 無法使用時的備案：官方來源優先列出最新標題與原文連結（不含 AI 欄位）。"""
+    return [{
+        "title": c["title"], "source": c["source"], "date": c["date"], "link": c["link"],
+        "category": "今日新聞", "summary": "", "ai_view": "", "extended_needs": [], "headline_only": True,
+    } for c in candidates[:n * 2]]
+
+
 def sample_market() -> dict:
     """範例行情（測試版面用，非真實數據）。"""
     import math
@@ -65,13 +73,16 @@ def main() -> int:
         if not candidates:
             log.error("今天沒有抓到任何新聞，停止產生網頁")
             return 1
-        ranked = select(candidates)
-        log.info("AI 挑選並排序 %d 則，開始讀取原文", len(ranked))
-        news = write(enrich(ranked, NEWS_PER_DAY))
-        log.info("AI 完成 %d 則", len(news))
+        try:
+            ranked = select(candidates)
+            log.info("AI 挑選並排序 %d 則，開始讀取原文", len(ranked))
+            news = write(enrich(ranked, NEWS_PER_DAY))
+            log.info("AI 完成 %d 則", len(news))
+        except Exception as e:  # noqa: BLE001
+            log.error("AI 暫時無法使用，改為只列出新聞標題：%s", str(e)[:300])
+            news = []
         if not news:
-            log.error("AI 沒有產出任何新聞，停止產生網頁")
-            return 1
+            news = headline_only(candidates, NEWS_PER_DAY)
 
     market = None
     if args.sample:

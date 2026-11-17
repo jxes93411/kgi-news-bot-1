@@ -24,7 +24,6 @@ from sources import NEWS_PER_DAY
 log = logging.getLogger(__name__)
 
 PREFERRED = [os.getenv("GEMINI_MODEL"), "gemini-3.8-flash", "gemini-flash-latest"]
-_SKIP = ("lite", "image", "tts", "audio", "live", "embedding", "thinking", "exp", "computer")
 
 ROLE = """你是凱基人壽北一區域中心的資深保險財經編輯，服務對象是第一線業務同仁。一律使用台灣繁體中文。"""
 
@@ -74,7 +73,8 @@ def _candidate_models() -> list[str]:
         for m in _get_client().models.list():
             name = m.name.split("/")[-1]
             actions = getattr(m, "supported_actions", None) or []
-            if "flash" in name and not any(s in name for s in _SKIP) and \
+            # 只用一般 Flash 模型（例如 gemini-3.8-flash），排除 omni、lite、image 等特殊版本
+            if re.fullmatch(r"gemini-\d+(\.\d+)?-flash", name) and \
                (not actions or "generateContent" in actions):
                 found.append(name)
         found.sort(key=_version, reverse=True)
@@ -138,7 +138,11 @@ def _call(system: str, prompt: str) -> dict:
                 if "404" in msg or "NOT_FOUND" in msg or "not found" in msg.lower():
                     break
                 if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
-                    time.sleep(30)
+                    # 免費額度用完：Google 要求等很久（retryDelay）或屬於每日上限 → 直接換下一個模型
+                    wait = re.search(r"retryDelay'?:?\s*'?(\d+)s", msg)
+                    if not wait or int(wait.group(1)) > 60 or "PerDay" in msg:
+                        break
+                    time.sleep(int(wait.group(1)) + 2)
                 else:
                     time.sleep(5)
     raise RuntimeError(f"Gemini 呼叫失敗：{last_err}")
@@ -146,8 +150,7 @@ def _call(system: str, prompt: str) -> dict:
 
 def select(candidates: list[dict]) -> list[dict]:
     """第一段：只看標題挑新聞。"""
-    payload = [{"id": c["id"], "source": c["source"], "date": c["date"],
-                "title": c["title"], "note": c["rss_summary"][:120]} for c in candidates]
+    payload = [{"id": c["id"], "source": c["source"], "title": c["title"]} for c in candidates]
     data = _call(ROLE + "\n" + SELECT_RULES,
                  "候選新聞（JSON）：\n" + json.dumps(payload, ensure_ascii=False))
     by_id = {c["id"]: c for c in candidates}
@@ -170,7 +173,7 @@ def write(items: list[dict]) -> list[dict]:
         if c.get("no_content"):
             row["no_content"] = True
         else:
-            row["content"] = c["content"][:2500]
+            row["content"] = c["content"][:1500]
         payload.append(row)
     data = _call(ROLE + "\n" + WRITE_RULES,
                  "今日精選新聞（JSON）：\n" + json.dumps(payload, ensure_ascii=False))
