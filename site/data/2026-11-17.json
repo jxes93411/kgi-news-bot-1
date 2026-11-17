@@ -1,98 +1,134 @@
 [
   {
-    "title": "壽險業前10月新契約保費1.28兆 投資型保單年增逾1.2倍",
-    "source": "中央社",
+    "title": "團隊榮獲2026國家藥科獎 AI科技引領跨世代醫療變革",
+    "source": "衛福部",
     "date": "2026-11-17",
-    "link": "https://www.cna.com.tw/news/afe/202611170108.aspx",
-    "category": "產業趨勢",
-    "summary": "壽險公會統計，今年前10月壽險業新契約保費達1兆2889億元，年增57%。其中投資型保單初年度保費達7474億元，年增124.3%，主因上半年全球股市穩健及通路合作推動；傳統型保險初年度保費則為5414億元，年增11%，成長動能包含因應接軌制度推動保障型商品、調升利變保單宣告利率及高齡化需求。",
-    "ai_view": "面對市場投資型商品大幅成長與宣告利率調升趨勢，業務同仁可乘勢引導客戶檢視多元資產配置。除了透過投資型保險參與市場，亦可搭配利變型商品兼顧資產累積與傳承保障需求。",
-    "extended_needs": [
-      "投資型保險規劃",
-      "利變型保單配置",
-      "退休資產累積",
-      "高齡化傳承規劃"
-    ],
-    "no_content": false
+    "link": "https://www.mohw.gov.tw/cp-16-88499-1.html",
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
+  },
+  {
+    "title": "感謝縫隙中的引光者 衛福部表揚醫療關懷力典範獎得主",
+    "source": "衛福部",
+    "date": "2026-11-17",
+    "link": "https://www.mohw.gov.tw/cp-16-88498-1.html",
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
+  },
+  {
+    "title": "國民健康署表揚全國134家健康促進績優機構 共頒發190個獎項 醫起守護全民健康",
+    "source": "衛福部",
+    "date": "2026-11-17",
+    "link": "https://www.mohw.gov.tw/cp-16-88495-1.html",
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
+  },
+  {
+    "title": "身心障礙者權利公約第三次國家報告 國際專家在地審查落實成果",
+    "source": "衛福部",
+    "date": "2026-11-17",
+    "link": "https://www.mohw.gov.tw/cp-16-88486-1.html",
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
+  },
+  {
+    "title": "雙APP完成綁定獲得抽好禮機會 健康幣週週抽倒數2週!",
+    "source": "衛福部",
+    "date": "2026-11-16",
+    "link": "https://www.mohw.gov.tw/cp-16-88485-1.html",
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
+  },
+  {
+    "title": "因應公費新冠疫苗接種情形踴躍 疾管署已增購16.9萬劑Novavax新冠疫苗 已在封緘程序 最快於本週五撥配衛生局轉發合約醫療院所供接種使用",
+    "source": "衛福部",
+    "date": "2026-11-16",
+    "link": "https://www.mohw.gov.tw/cp-16-88484-1.html",
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
+  },
+  {
+    "title": "選戰倒數！個人捐贈政治獻金，報稅可扣除嗎？國稅局：5大規定要注意",
+    "source": "財政部",
+    "date": "2026-11-16",
+    "link": "https://www.mof.gov.tw/singlehtml/384fb3077bb349ea973e7fc6f13b6974?cntId=7564448fcdec40308a2d1515190aa8ea",
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
+  },
+  {
+    "title": "利用分散消費取得大量小額中獎統一發票，不予給獎",
+    "source": "財政部",
+    "date": "2026-11-16",
+    "link": "https://www.mof.gov.tw/singlehtml/384fb3077bb349ea973e7fc6f13b6974?cntId=e507975d7b1e4a7e902f4ed0af7bf220",
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
+  },
+  {
+    "title": "申請國稅局「查調即時通知」服務，即時守護您的財產及所得個資安全",
+    "source": "財政部",
+    "date": "2026-11-16",
+    "link": "https://www.mof.gov.tw/singlehtml/384fb3077bb349ea973e7fc6f13b6974?cntId=e3cb5ec008d848b5a8ec8fa1d4b4f5e2",
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
+  },
+  {
+    "title": "解散公司怠於清理資產?國稅局執行勞工退休準備金專戶賸餘款，成功徵起稅款",
+    "source": "財政部",
+    "date": "2026-11-16",
+    "link": "https://www.mof.gov.tw/singlehtml/384fb3077bb349ea973e7fc6f13b6974?cntId=9e8fabe77f1143479cc5e475a173e9d0",
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
   },
   {
     "title": "被繼承人死亡前2年內贈與之土地，若受贈人親屬關係已消滅，所贈與之財產無須併入遺產課稅，惟因該贈與行為所納之贈與稅及土地增值稅亦不得扣抵遺產稅。",
     "source": "財政部",
     "date": "2026-11-16",
     "link": "https://www.mof.gov.tw/singlehtml/384fb3077bb349ea973e7fc6f13b6974?cntId=94751d3289874001859f93666181f0dd",
-    "category": "稅務傳承",
-    "summary": "財政部高雄國稅局指出，被繼承人死亡前2年內贈與財產，若受贈人在繼承發生時因離婚或中間親屬死亡致親屬身分消滅，該贈與財產免依遺贈稅法第15條併入遺產課稅。然而，該筆贈與先前已繳納的贈與稅及土地增值稅，亦無法依同法第11條規定自應納遺產稅額中扣抵，民眾規劃時應注意身分認定。",
-    "ai_view": "生前直接贈與不動產若遇家庭成員身分關係改變，可能產生無法扣抵稅款的稅務風險。保險指定受益人具備法律確定性，能協助客戶在資產傳承時避免繁瑣的親屬身分認定爭議。",
-    "extended_needs": [
-      "資產傳承規劃",
-      "預留稅源規劃",
-      "指定受益人運用",
-      "家庭財富分配"
-    ],
-    "no_content": false
-  },
-  {
-    "title": "爸爸匯300萬元替兒買代步車 漏掉一件事被國稅局盯上了",
-    "source": "經濟日報",
-    "date": "2026-11-17",
-    "link": "https://money.udn.com/money/story/6710/9883350",
-    "category": "稅務傳承",
-    "summary": "台北國稅局表示，父母出資幫子女買車，即使款項直接匯給車商、車輛登記在子女名下，依遺贈稅法規定仍屬視同贈與。若該筆出資額加計同年度其他贈與超過每人每年244萬元免稅額，即應辦理贈與稅申報。曾有父親匯款300萬元替兒買車未依規定申報，遭補徵贈與稅5萬6,000元並處以罰鍰。",
-    "ai_view": "父母常以直接代付款項方式照顧子女，卻容易忽視視同贈與的稅務規範。業務同仁可協助客戶善用每年贈與免稅額度，結合年金險或終身壽險進行分年合規移轉，穩健達成照顧子女目的。",
-    "extended_needs": [
-      "分年贈與規劃",
-      "二代購車置產諮詢",
-      "合規稅務傳承",
-      "子女教育金規劃"
-    ],
-    "no_content": false
-  },
-  {
-    "title": "PIMCO：通膨黏著性高 Fed 在12月升息2碼機率提高",
-    "source": "經濟日報",
-    "date": "2026-11-17",
-    "link": "https://money.udn.com/money/story/5616/9883793",
-    "category": "利率匯率",
-    "summary": "PIMCO經濟學家指出，受美國10月CPI高於預期及官員談話影響，聯準會12月升息2碼的可能性提高。PIMCO目前預估12月與明年1月各升息1碼，3月仍有升息風險。不過PIMCO認為此舉屬於政策重新校準，非新升息循環開始，其基準情境仍預期隨能源衝擊淡出與金融緊縮，美國通膨將在2027年明顯下降。",
-    "ai_view": "面對美準會升息預期及利率環境的持續緊縮，客戶持有單一資產面臨的波動風險增加。業務同仁可建議客戶適度配置美元計價利變型壽險，鎖定穩健宣告利率以抵抗通膨帶來的資產侵蝕。",
-    "extended_needs": [
-      "美元資產配置",
-      "對抗通膨規劃",
-      "利率變動型保單",
-      "多元幣別配置"
-    ],
-    "no_content": false
-  },
-  {
-    "title": "出口賺飽、台幣卻墊底？外資撤出210億美元 彭博：新台幣還有得貶",
-    "source": "經濟日報",
-    "date": "2026-11-17",
-    "link": "https://money.udn.com/money/story/5616/9883931",
-    "category": "利率匯率",
-    "summary": "彭博分析指出，外資11月截至16日已賣超台股近210億美元，新台幣近月貶值約1.8%居亞幣之末。儘管台灣第2季經常帳順差約590億美元，但金融帳淨流出540億美元，主因企業海外投資、台積電海外擴產使美元留在海外，加上台美利差可能持續擴大，龐大貿易順差仍難以支撐匯價，新台幣續面臨貶值壓力。",
-    "ai_view": "在外資撤出與台美利差擴大的環境下，新台幣貶值趨勢顯著，凸顯外幣資產配置的重要性。透過美元計價的保單規劃，不僅能分散單一幣別匯率風險，亦能協助客戶完善中長期的跨國資產布局。",
-    "extended_needs": [
-      "外幣資產配置",
-      "匯率風險分散",
-      "全球資產布局",
-      "長期儲蓄規劃"
-    ],
-    "no_content": false
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
   },
   {
     "title": "AI浪潮下，股市交易熱絡，民眾透過複委託交易美股價差利益，如何申報計稅？",
     "source": "財政部",
     "date": "2026-11-16",
     "link": "https://www.mof.gov.tw/singlehtml/384fb3077bb349ea973e7fc6f13b6974?cntId=8edde68c00e542ba99176d36636472a4",
-    "category": "稅務傳承",
-    "summary": "財政部高雄國稅局說明，民眾透過複委託交易美股產生的價差利益，屬於海外財產交易所得，須併入個人所得基本稅額申報。若海外財產交易發生損失，僅能自同年度海外財產交易所得中扣除，無法跨年度自次年起3年內扣除。且海外所得不會顯示在國稅局提供的查調資料中，民眾應依機構通知書主動申報以免受罰。",
-    "ai_view": "海外投資獲利須納入最低稅負制申報，且損失無法跨年扣除，增加高資產客戶的稅務管理複雜度。保險給付在符合特定條件下享有稅務優勢，可做為客戶平衡海外投資所得的穩健傳承工具。",
-    "extended_needs": [
-      "最低稅負制因應",
-      "海外資產稅務檢視",
-      "財富保全規劃",
-      "保險給付稅務優勢"
-    ],
-    "no_content": false
+    "category": "今日新聞",
+    "summary": "",
+    "ai_view": "",
+    "extended_needs": [],
+    "headline_only": true
   }
 ]
