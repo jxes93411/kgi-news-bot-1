@@ -154,8 +154,8 @@ def _page(news: list[dict], d: datetime, url: str, archive: list[str], mk: dict 
     return f"""<!DOCTYPE html>
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>今日保險財經新聞 {_date_label(d)}｜{BRAND}</title>
-<meta property="og:title" content="今日保險財經新聞 {_date_label(d)}">
+<title>北一保險財經新聞 {_date_label(d)}｜{BRAND}</title>
+<meta property="og:title" content="北一保險財經新聞 {_date_label(d)}">
 <meta property="og:description" content="{E(desc)}">
 <meta property="og:type" content="article"><meta property="og:url" content="{E(url)}">
 <meta name="robots" content="noindex">
