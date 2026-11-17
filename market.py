@@ -25,18 +25,48 @@ FX = [
 ]
 
 
-def _history(symbol: str, period: str = "3mo") -> list[tuple[str, float]]:
-    """回傳 [(日期, 收盤價), ...]，由舊到新。"""
-    import yfinance as yf
-    for attempt in range(3):
+UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/130.0 Safari/537.36"}
+
+
+def _from_chart_api(symbol: str, period: str) -> list[tuple[str, float]]:
+    """直接讀 Yahoo Finance 圖表資料（有 15 秒等待上限，不會卡住）。"""
+    import requests
+    for host in ("query2", "query1"):
         try:
-            df = yf.Ticker(symbol).history(period=period, interval="1d", auto_adjust=False)
-            df = df.dropna(subset=["Close"])
-            if len(df):
-                return [(idx.strftime("%Y-%m-%d"), float(v)) for idx, v in df["Close"].items()]
+            r = requests.get(f"https://{host}.finance.yahoo.com/v8/finance/chart/{symbol}",
+                             params={"range": period, "interval": "1d"}, headers=UA, timeout=15)
+            res = r.json()["chart"]["result"][0]
+            closes = res["indicators"]["quote"][0]["close"]
+            out = [(time.strftime("%Y-%m-%d", time.gmtime(t + res["meta"].get("gmtoffset", 0))), float(c))
+                   for t, c in zip(res["timestamp"], closes) if c is not None]
+            if out:
+                return out
         except Exception as e:  # noqa: BLE001
-            log.info("%s 第 %d 次讀取失敗：%s", symbol, attempt + 1, str(e)[:120])
-        time.sleep(3 * (attempt + 1))
+            log.info("%s（%s）讀取失敗：%s", symbol, host, str(e)[:100])
+    return []
+
+
+def _from_yfinance(symbol: str, period: str) -> list[tuple[str, float]]:
+    import yfinance as yf
+    df = yf.Ticker(symbol).history(period=period, interval="1d", auto_adjust=False, timeout=15)
+    df = df.dropna(subset=["Close"])
+    return [(idx.strftime("%Y-%m-%d"), float(v)) for idx, v in df["Close"].items()]
+
+
+def _history(symbol: str, period: str = "3mo") -> list[tuple[str, float]]:
+    """回傳 [(日期, 收盤價), ...]，由舊到新。先試圖表 API，失敗再用 yfinance（最多等 25 秒）。"""
+    s = _from_chart_api(symbol, period)
+    if s:
+        return s
+    import threading
+    box: list = []
+    t = threading.Thread(target=lambda: box.append(_from_yfinance(symbol, period)), daemon=True)
+    t.start()
+    t.join(timeout=25)  # 背景執行緒（daemon），逾時就放著不管，程式結束時不會被它卡住
+    if box:
+        return box[0]
+    log.info("%s（yfinance）讀取失敗或逾時", symbol)
     return []
 
 

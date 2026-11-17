@@ -53,7 +53,9 @@ _models = None
 def _get_client() -> genai.Client:
     global _client
     if _client is None:
-        _client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+        # 每次呼叫最多等 90 秒，避免 Google 沒回應時整個流程卡住
+        _client = genai.Client(api_key=os.environ["GEMINI_API_KEY"],
+                               http_options=types.HttpOptions(timeout=90_000))
     return _client
 
 
@@ -83,31 +85,62 @@ def _candidate_models() -> list[str]:
     return _models
 
 
+def _generate(model: str, system: str, prompt: str, limit: int = 120) -> str:
+    """呼叫 Gemini；用背景執行緒再加一道 120 秒保險，確保絕不會無限等待。"""
+    import threading
+    box: dict = {}
+
+    def run():
+        try:
+            resp = _get_client().models.generate_content(
+                model=model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=system,
+                    response_mime_type="application/json",
+                    temperature=0.4,
+                ),
+            )
+            box["text"] = resp.text or ""
+        except Exception as e:  # noqa: BLE001
+            box["err"] = e
+
+    t = threading.Thread(target=run, daemon=True)
+    t.start()
+    t.join(timeout=limit)
+    if "err" in box:
+        raise box["err"]
+    if "text" not in box:
+        raise TimeoutError(f"超過 {limit} 秒沒有回應")
+    return box["text"]
+
+
 def _call(system: str, prompt: str) -> dict:
+    """依序嘗試可用模型。
+    404（模型停用）→ 直接換下一個；503／逾時（使用量太大）→ 重試 1 次後換下一個；
+    429（免費額度暫時用完）→ 等 30 秒重試。"""
     last_err = None
+    started = time.time()
     for model in _candidate_models():
-        for attempt in range(3):
+        for attempt in range(2):
+            if time.time() - started > 8 * 60:
+                raise RuntimeError(f"Gemini 嘗試超過 8 分鐘仍失敗：{last_err}")
             try:
-                resp = _get_client().models.generate_content(
-                    model=model,
-                    contents=prompt,
-                    config=types.GenerateContentConfig(
-                        system_instruction=system,
-                        response_mime_type="application/json",
-                        temperature=0.4,
-                    ),
-                )
-                text = resp.text or ""
+                text = _generate(model, system, prompt)
                 m = re.search(r"\{.*\}", text, re.S)
+                data = json.loads(m.group(0) if m else text)
                 log.info("使用模型：%s", model)
-                return json.loads(m.group(0) if m else text)
+                return data
             except Exception as e:  # noqa: BLE001
                 last_err = e
                 msg = str(e)
                 log.warning("Gemini %s 第 %d 次失敗：%s", model, attempt + 1, msg[:200])
                 if "404" in msg or "NOT_FOUND" in msg or "not found" in msg.lower():
-                    break  # 模型不存在或已停用 → 換下一個模型
-                time.sleep(30 if "429" in msg else 5)  # 429 = 免費額度暫時用完
+                    break
+                if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+                    time.sleep(30)
+                else:
+                    time.sleep(5)
     raise RuntimeError(f"Gemini 呼叫失敗：{last_err}")
 
 
