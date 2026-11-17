@@ -36,6 +36,19 @@ SAMPLE = [
 ]
 
 
+def sample_market() -> dict:
+    """範例行情（測試版面用，非真實數據）。"""
+    import math
+    def s(base, amp, digits, name):
+        series = [(f"2026-10-{i+1:02d}", base + amp * math.sin(i / 4) + i * amp / 20) for i in range(30)]
+        (_, p), (dt, v) = series[-2], series[-1]
+        return {"name": name, "ok": True, "date": dt, "digits": digits, "last": v, "chg": v - p,
+                "pct": (v - p) / p * 100, "series": series}
+    return {"indices": [s(23000, 300, 2, "台股加權指數"), s(44000, -400, 2, "道瓊工業指數"),
+                        s(6000, 60, 2, "S&P 500"), s(19000, 250, 2, "NASDAQ"), {"name": "費城半導體", "ok": False}],
+            "fx": [s(32.5, .3, 3, "美元 / 新台幣"), s(.2150, -.002, 4, "日圓 / 新台幣"), s(35.2, .4, 3, "歐元 / 新台幣")]}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--sample", action="store_true")
@@ -60,7 +73,16 @@ def main() -> int:
             log.error("AI 沒有產出任何新聞，停止產生網頁")
             return 1
 
-    url, text = build(news)
+    market = None
+    if args.sample:
+        market = sample_market()
+    else:
+        try:
+            from market import fetch_market
+            market = fetch_market()
+        except Exception as e:  # noqa: BLE001 — 行情抓不到不影響新聞
+            log.warning("市場行情抓取失敗：%s", e)
+    url, text = build(news, market)
     log.info("網頁已產生：%s", url)
     print("\n===== 今日分享文字 =====\n" + text + "\n")
 

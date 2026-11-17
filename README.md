@@ -93,3 +93,9 @@ python main.py               # 完整跑一次
 全部使用免費方案：GitHub Actions、GitHub Pages（公開 repository）、Gemini API 免費額度，**每月 0 元**。
 
 若某天出現「Gemini 呼叫失敗」或 429 錯誤，代表免費額度暫時用完或 Google 調整了限制，系統會自動重試並改用備用模型；仍失敗時，到 Actions 手動按一次 Run workflow 即可。
+
+## 股市指數與匯率
+
+網頁最上方顯示前一交易日收盤的股市指數（台股加權、道瓊、S&P 500、NASDAQ、費城半導體），以及美元、日圓、歐元兌新台幣的近 30 個交易日走勢（`market.py`）。
+資料來源為 Yahoo Finance（透過 yfinance 套件讀取，與 tw.stock.yahoo.com 同一份資料）。任何一項抓不到時只會顯示「暫無資料」，不影響新聞產生。
+顏色依台灣習慣：紅色 ▲ 代表上漲、綠色 ▼ 代表下跌。
