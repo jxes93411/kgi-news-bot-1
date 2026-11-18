@@ -101,6 +101,9 @@ def fetch_candidates() -> list[dict]:
                 if src.get("filter") and not _match_keywords(title + body[:300]):
                     continue
                 key = re.sub(r"\W", "", title)[:40]
+                # 過濾雜訊：檔名（.pdf 等）、過短的標題
+                if re.search(r"\.(pdf|docx?|xlsx?|odt)\b", title, re.I) or len(key) < 8:
+                    continue
                 if not title or key in seen:
                     continue
                 seen.add(key)

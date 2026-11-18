@@ -53,9 +53,9 @@ _models = None
 def _get_client() -> genai.Client:
     global _client
     if _client is None:
-        # 每次呼叫最多等 90 秒，避免 Google 沒回應時整個流程卡住
+        # 每次呼叫最多等 180 秒，避免 Google 沒回應時整個流程卡住
         _client = genai.Client(api_key=os.environ["GEMINI_API_KEY"],
-                               http_options=types.HttpOptions(timeout=90_000))
+                               http_options=types.HttpOptions(timeout=180_000))
     return _client
 
 
@@ -74,11 +74,12 @@ def _candidate_models() -> list[str]:
         for m in _get_client().models.list():
             name = m.name.split("/")[-1]
             actions = getattr(m, "supported_actions", None) or []
-            # 只用一般 Flash 模型（例如 gemini-3.8-flash），排除 omni、lite、image 等特殊版本
-            if re.fullmatch(r"gemini-\d+(\.\d+)?-flash", name) and \
+            # 只用一般 Flash／Flash-Lite 模型，排除 omni、image、tts 等特殊版本
+            if re.fullmatch(r"gemini-\d+(\.\d+)?-flash(-lite)?", name) and \
                (not actions or "generateContent" in actions):
                 found.append(name)
-        found.sort(key=_version, reverse=True)
+        # 先用 Flash（品質較好），全部不行再用 Flash-Lite（較輕量、通常較不擁擠）；同類由新到舊
+        found.sort(key=lambda n: ("lite" in n, tuple(-x for x in _version(n))))
         log.info("可用的 Flash 模型：%s", found[:5])
     except Exception as e:  # noqa: BLE001
         log.warning("查詢模型清單失敗：%s", str(e)[:200])
@@ -86,8 +87,12 @@ def _candidate_models() -> list[str]:
     return _models
 
 
-def _generate(model: str, system: str, prompt: str, limit: int = 120) -> str:
-    """呼叫 Gemini；用背景執行緒再加一道 120 秒保險，確保絕不會無限等待。"""
+_NO_THINKING_CFG: set[str] = set()  # 不支援 thinking_level 設定的模型
+
+
+def _generate(model: str, system: str, prompt: str, limit: int = 200) -> str:
+    """呼叫 Gemini；用背景執行緒再加一道 200 秒保險，確保絕不會無限等待。
+    整理新聞不需要深度推理，設定「輕度思考」以大幅縮短回應時間。"""
     import threading
     box: dict = {}
 
@@ -100,6 +105,8 @@ def _generate(model: str, system: str, prompt: str, limit: int = 120) -> str:
                     system_instruction=system,
                     response_mime_type="application/json",
                     temperature=0.4,
+                    **({} if model in _NO_THINKING_CFG else
+                       {"thinking_config": types.ThinkingConfig(thinking_level="LOW")}),
                 ),
             )
             box["text"] = resp.text or ""
@@ -145,6 +152,10 @@ def _call(system: str, prompt: str) -> dict:
                     if "404" in msg or "NOT_FOUND" in msg or "not found" in msg.lower():
                         dead.add(model)
                         break
+                    if ("400" in msg or "INVALID_ARGUMENT" in msg) and "think" in msg.lower() \
+                            and model not in _NO_THINKING_CFG:
+                        _NO_THINKING_CFG.add(model)  # 這個模型不支援思考設定 → 不帶設定再試
+                        continue
                     if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
                         wait = re.search(r"retryDelay'?:?\s*'?(\d+)s", msg)
                         if not wait or int(wait.group(1)) > 60 or "PerDay" in msg:
