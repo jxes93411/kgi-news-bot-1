@@ -1,68 +1,85 @@
 [
   {
-    "title": "- 保險存摺",
-    "source": "壽險公會",
-    "date": "2026-11-18",
-    "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFB1NkdpdzFFQkpmUXRaY3ZQb09sYjdXR3ZRUVZvdk9xZmxjRkFSSEsyYVU2ZGNIaHFsVjh1eEJwajFLcVZ5NE1jbTNWdl9PbG50RExvMUtiZDJBZw?oc=5",
-    "category": "今日新聞",
-    "summary": "",
-    "ai_view": "",
-    "extended_needs": [],
-    "headline_only": true
-  },
-  {
-    "title": "針對近日新聞報導健保藥局倒閉潮影響民眾領藥權益 健保署說明:健保特約藥局10年成長27%",
-    "source": "衛福部",
+    "title": "壽險公司115年截至第3季具外溢效果保險商品及實物給付保險商品之銷售情形",
+    "source": "金管會",
     "date": "2026-11-17",
-    "link": "https://www.mohw.gov.tw/cp-16-88516-1.html",
-    "category": "今日新聞",
-    "summary": "",
-    "ai_view": "",
-    "extended_needs": [],
-    "headline_only": true
+    "link": "https://www.fsc.gov.tw/ch/home.jsp?id=96&parentpath=0,2&mcustomize=news_view.jsp&dataserno=202611170003&toolsflag=Y&dtable=News",
+    "category": "產業趨勢",
+    "summary": "金管會公布115年截至第3季壽險公司外溢效果保險商品及實物給付保險商品銷售情形。具外溢效果保險商品新契約銷售件數及初年度保費收入皆較114年同期增加；實物給付型保險商品新契約銷售件數及初年度保費收入則較114年同期減少。金管會將持續鼓勵業者研發相關商品，提升國人健康管理重視並滿足多樣需求。",
+    "ai_view": "外溢保單結合健康管理與保障，能有效提醒保戶自主管理風險，是近年投保規劃的熱門趨勢。業務同仁在與保戶溝通時，可藉此引導重視預防醫學與長期保障的建構。",
+    "extended_needs": [
+      "醫療長照",
+      "退休規劃"
+    ],
+    "no_content": false
   },
   {
-    "title": "營利事業應留意勿將員工自付勞健保費列報為費用",
+    "title": "被繼承人死亡前2年內贈與之土地，若受贈人親屬關係已消滅，所贈與之財產無須併入遺產課稅，惟因該贈與行為所納之贈與稅及土地增值稅亦不得扣抵遺產稅。",
     "source": "財政部",
-    "date": "2026-11-17",
-    "link": "https://www.mof.gov.tw/singlehtml/384fb3077bb349ea973e7fc6f13b6974?cntId=131a2c1f008e4666bb32446a02ab6338",
-    "category": "今日新聞",
-    "summary": "",
-    "ai_view": "",
-    "extended_needs": [],
-    "headline_only": true
+    "date": "2026-11-16",
+    "link": "https://www.mof.gov.tw/singlehtml/384fb3077bb349ea973e7fc6f13b6974?cntId=94751d3289874001859f93666181f0dd",
+    "category": "稅務傳承",
+    "summary": "財政部高雄國稅局表示，被繼承人死亡前2年內贈與特定親屬之財產，於死亡時應視為遺產課稅並可扣抵已繳納之贈與稅及土增稅；但若受贈人於被繼承人死亡前，彼此親屬身分關係已消滅，則該贈與財產無須併入遺產課稅，先前繳納之贈與稅及土增稅亦不得扣抵遺產稅。",
+    "ai_view": "資產傳承與生前贈與規劃需特別留意親屬身分變動對稅賦的影響。業務同仁在協助保戶進行家族財富傳承時，可提醒法規細節，確保稅務規劃的正確性。",
+    "extended_needs": [
+      "稅務傳承",
+      "退休規劃"
+    ],
+    "no_content": false
   },
   {
-    "title": "響應世界抗生素週 疾管署舉辦多元活動 歡迎民眾共襄盛舉",
-    "source": "衛福部",
-    "date": "2026-11-17",
-    "link": "https://www.mohw.gov.tw/cp-16-88514-1.html",
-    "category": "今日新聞",
-    "summary": "",
-    "ai_view": "",
-    "extended_needs": [],
-    "headline_only": true
+    "title": "選戰倒數！個人捐贈政治獻金，報稅可扣除嗎？國稅局：5大規定要注意",
+    "source": "財政部",
+    "date": "2026-11-16",
+    "link": "https://www.mof.gov.tw/singlehtml/384fb3077bb349ea973e7fc6f13b6974?cntId=7564448fcdec40308a2d1515190aa8ea",
+    "category": "稅務傳承",
+    "summary": "財政部高雄國稅局說明個人捐贈政治獻金申報綜合所得稅列舉扣除額的5大規定與上限。捐贈對象須合法，對同一擬參選人每年捐贈總額不超過10萬元，且每一申報戶列舉扣除總額不得超過當年度綜合所得總額20%且以20萬元為限，並應取得符合規定格式之收據。",
+    "ai_view": "民眾在進行年度所得稅報稅規劃時，常運用各類列舉扣除額來達到節稅效果。透過了解政治獻金扣除規定，有助於提醒高資產或有節稅需求的保戶在財務規劃時全盤考量。",
+    "extended_needs": [
+      "稅務傳承"
+    ],
+    "no_content": false
   },
   {
     "title": "近日氣溫變化大 呼籲民眾留意健康狀況並接種疫苗 有危險徵兆快就醫",
     "source": "衛福部",
     "date": "2026-11-17",
     "link": "https://www.mohw.gov.tw/cp-16-88513-1.html",
-    "category": "今日新聞",
-    "summary": "",
-    "ai_view": "",
-    "extended_needs": [],
-    "headline_only": true
+    "category": "醫療長照",
+    "summary": "疾管署表示近日氣溫變化大易感染呼吸道疾病，流感重症及死亡通報個案仍多。高風險族群應儘速接種流感及新冠疫苗，若出現呼吸困難、發紺、胸痛等危險徵兆應儘速就醫。公費疫苗持續施打中，呼籲民眾做好手部衛生與咳嗽禮節，落實防護措施。",
+    "ai_view": "季節交替時節呼吸道疾病風險升高，高齡與慢性病族群面臨較大的健康威脅。業務同仁可藉此關心保戶及其家人的醫療保障是否足夠，適時檢視實支實付與日額型醫療險。",
+    "extended_needs": [
+      "醫療長照"
+    ],
+    "no_content": false
   },
   {
-    "title": "698ad6a1aeec6.pdf - 壽險公會",
-    "source": "壽險公會",
-    "date": "2026-11-17",
-    "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9uMGd4N0N6Y216cXBrYkdnVHFkWkNMd3h1a0Y5QXdGVHRuRTE0cWYtRlRtd0kzVkh1WnNJUlV1TEtZVkRhV0lBazZlVTNtVUxJdlJreDBNeW9MTW5DN2paczFDbjdfaDFGb3ZBMQ?oc=5",
-    "category": "今日新聞",
-    "summary": "",
-    "ai_view": "",
-    "extended_needs": [],
-    "headline_only": true
+    "title": "金管會急找37家銀行喝咖啡！李同榮示警：2027房市恐遇三大逆風",
+    "source": "經濟日報",
+    "date": "2026-11-18",
+    "link": "https://money.udn.com/money/story/5613/9885782",
+    "category": "產業趨勢",
+    "summary": "金管會近期要求銀行強化資金調度以避免合理融資需求遭排擠。專家示警2027年房市將面臨銀行資金緊縮、AI資本支出可能放緩及央行利率信用政策不確定性等三大逆風，房貸市場恐持續承壓，強調貸得到款比利率高低更重要。",
+    "ai_view": "房市與銀行融資環境的變動，直接影響民眾的資金調度與不動產規劃。保險具備資產配置與風險轉嫁功能，在市場變動期可提供穩健的財務安全網。",
+    "extended_needs": [
+      "利率匯率",
+      "退休規劃",
+      "資產配置"
+    ],
+    "no_content": false
+  },
+  {
+    "title": "央行力守33關 台幣逆勢走高 昨收32.85元全日最高價",
+    "source": "經濟日報",
+    "date": "2026-11-18",
+    "link": "https://money.udn.com/money/story/5616/9885116",
+    "category": "利率匯率",
+    "summary": "外資持續賣超台股，新台幣兌美元匯率在午後出現外資匯入，在央行進場守住33元關卡及外商銀行美元賣盤下，終場以32.85元、當日最高價作收，升值3.6分，呈先貶後升走勢。短線匯市走向仍取決於台股及國際股市表現。",
+    "ai_view": "匯率波動反映國際資本流向與外資動向，連帶牽動國內金融市場表現。對重視資產配置與外幣保單的保戶而言，持續關注匯率走勢有助於做好風險管理。",
+    "extended_needs": [
+      "利率匯率",
+      "退休規劃"
+    ],
+    "no_content": false
   }
 ]
